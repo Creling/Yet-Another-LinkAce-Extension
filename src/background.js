@@ -20,7 +20,6 @@ chrome.runtime.onMessage.addListener(msg => {
 });
 
 chrome.tabs.onUpdated.addListener((tabId) => {
-    console.log("update")
     check_tab(tabId)
 });
 
@@ -29,7 +28,7 @@ function check_tab(tabId) {
     chrome.browserAction.setBadgeBackgroundColor({ tabId: tabId, color: "#f2ce2b" }) // yello => loading
 
     chrome.tabs.get(tabId, (tab) => {
-        console.log("gettab")
+        console.log(tab)
         let currentUrl = tab.url
         if (currentUrl[currentUrl.length - 1] == "/") {
             currentUrl = currentUrl.substring(0, currentUrl.length - 1)
@@ -37,22 +36,17 @@ function check_tab(tabId) {
         axios.get("/api/v1/search/links", {
             params: { query: currentUrl },
         }).then(res => {
-            console.log(res)
             let link = res.data.data[0]
             if (link) {
-
-                console.log(link)
                 chrome.browserAction.setBadgeText({ tabId: tabId, text: '√' });
                 chrome.browserAction.setBadgeBackgroundColor({ tabId: tabId, color: "#41b349" })  // green => in LinkAce
-                chrome.storage.sync.set({ yalePageStatus: link.id })  
+                chrome.storage.sync.set({ yalePageStatus: link.id })
             }
             else {
-                console.log("no result")
                 chrome.browserAction.setBadgeText({ tabId: tabId, text: '' })
                 chrome.storage.sync.set({ yalePageStatus: -1 })  // not in LinkAce
             }
         }, () => {
-            console.log("err")
             chrome.browserAction.setBadgeText({ tabId: tabId, text: '!' });
             chrome.browserAction.setBadgeBackgroundColor({ tabId: tabId, color: "#a61b29" })  // red => something went wrong
             chrome.storage.sync.set({ yalePageStatus: -2 })  // unknown status
@@ -64,5 +58,32 @@ function check_current_tab() {
     chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
         let tabId = tabs[0].id;
         check_tab(tabId);
-      });
+    });
 }
+
+chrome.omnibox.onInputChanged.addListener((text, suggest) => {
+    if (!text)
+        return;
+    console.log(text)
+    axios.get("/api/v1/search/links", {
+        params: { query: text },
+    }).then(res => {
+        let links = res.data.data
+        let suggests = []
+        for (let link of links) {
+            let url = link.url.replace(/&/g, '&amp;').replace(/</g, '&lt;').split(text)
+            url = url.join(`<match>${text}</match>`)  // highlight user's input in url
+            let title = link.title.split(text)
+            title = title.join(`<match>${text}</match>`)  // hight usr's input in title
+            suggests.push({ content: link.url, description: `${title} - <url>${url}</url>` })
+        }
+        suggest(suggests)
+    })
+});
+
+chrome.omnibox.onInputEntered.addListener(text => {
+    chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+        let tabId = tabs[0].id;
+        chrome.tabs.update(tabId, { url: text });
+    });
+})
