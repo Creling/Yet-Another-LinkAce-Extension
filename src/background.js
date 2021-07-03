@@ -23,12 +23,20 @@ chrome.tabs.onUpdated.addListener((tabId) => {
     check_tab(tabId)
 });
 
+chrome.tabs.onActivated.addListener((tabInfo) => {
+    let tabId = tabInfo.tabId
+    setTimeout(() => {
+        check_tab(tabId)
+    }, 150);
+});
+
 function check_tab(tabId) {
+
+    console.log("checkTab")
     chrome.browserAction.setBadgeText({ tabId: tabId, text: 'o' })
     chrome.browserAction.setBadgeBackgroundColor({ tabId: tabId, color: "#f2ce2b" }) // yello => loading
 
     chrome.tabs.get(tabId, (tab) => {
-        console.log(tab)
         let currentUrl = tab.url
         if (currentUrl[currentUrl.length - 1] == "/") {
             currentUrl = currentUrl.substring(0, currentUrl.length - 1)
@@ -52,6 +60,7 @@ function check_tab(tabId) {
             chrome.storage.sync.set({ yalePageStatus: -2 })  // unknown status
         })
     });
+
 }
 
 function check_current_tab() {
