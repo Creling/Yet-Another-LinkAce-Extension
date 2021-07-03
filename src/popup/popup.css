@@ -1,0 +1,114 @@
+#app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 60px;
+  }
+  
+  .yale-nav {
+    text-align: end;
+    height: 50px;
+    background-color: #44679f;
+  }
+  
+  .yale-nav::after {
+    content: "";
+    width: 0;
+    height: 100%;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  
+  .yale-nav > button {
+    background-color: transparent;
+    height: 100%;
+    border: 0;
+    padding: 0 1em 0 0;
+  }
+  
+  .yale-nav > button > i:hover {
+    border: solid 2px aliceblue;
+  }
+  
+  .yale-nav > button:focus,
+  .yale-nav > button:hover {
+    color: #409eff;
+    border-color: transparent;
+    background-color: transparent;
+  }
+  
+  i.el-icon-setting {
+    font-size: 35px;
+    vertical-align: middle;
+    color: aliceblue;
+  }
+  
+  body {
+    margin: 0;
+  }
+  
+  h1 {
+    font-family: sans-serif;
+    margin-left: 0.5em;
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+  }
+  
+  .tags-input-wrapper-default.tags-input > span > span {
+    font-size: 1.5em;
+    align-self: center;
+    margin-right: 0;
+    padding-right: 0.7em;
+  }
+  
+  div.tags-input-wrapper-default.tags-input > span > a {
+    padding: 1.25em 2em 1.25em 0em;
+  }
+  
+  .tags-input-badge-pill.tags-input-badge-selected-default {
+    border-radius: 0.5em;
+  }
+  
+  div.tags-input-wrapper-default.tags-input > input[type="text"] {
+    width: 50%;
+  }
+  
+  div.tags-input-wrapper-default.tags-input.active > input[type="text"] {
+    width: 50%;
+  }
+  
+  .el-dialog__body {
+    font-size: 100% !important;
+  }
+  
+  .yale-input input {
+    height: 2.5em;
+    padding: 0 15px;
+  }
+  
+  .yale-input .tags-input-wrapper-default {
+    padding: 0;
+  }
+  
+  .yale-input .tags-input-badge-selected-default {
+    height: 2.5em;
+    display: flex;
+  }
+  
+  .tags-input-wrapper-default > span > span {
+    font-size: 1.5em;
+    align-self: center;
+    margin-right: 0;
+  }
+  
+  p.typeahead-badges {
+    margin: 0;
+    z-index: 99;
+    position: fixed;
+  }
+  
+  .tags-input-root .el-input {
+    position: relative;
+  }
