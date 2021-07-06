@@ -57,7 +57,7 @@
           :delete-on-backspace="true"
           typeahead-style="badges"
           value-fields="value"
-          class="yale-input"
+          class="yale-input yale-tags"
           placeholder=""
         ></tags-input>
       </el-col>
@@ -76,7 +76,7 @@
           @change="search_lists_no_promise"
           :add-tags-on-comma="true"
           :delete-on-backspace="true"
-          class="yale-input"
+          class="yale-input yale-lists"
           placeholder=""
         ></tags-input>
       </el-col>

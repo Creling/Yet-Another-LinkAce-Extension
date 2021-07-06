@@ -112,3 +112,11 @@
   .tags-input-root .el-input {
     position: relative;
   }
+
+  .yale-tags > .tags-input > span > span::before {
+    content: "#";
+  }
+
+  .yale-lists > .tags-input > span > span::before {
+    content: "@";
+  }
