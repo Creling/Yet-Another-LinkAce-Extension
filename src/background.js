@@ -1,18 +1,31 @@
 import axios from 'axios'
+import { setupCache } from 'axios-cache-adapter'
 
-axios.defaults.timeout = 5000
+
+const cache = setupCache({
+    maxAge: 1 * 60 * 1000,
+    exclude: { query: false }
+})
+var api = axios.create({
+    adapter: cache.adapter
+})
+
+api.defaults.timeout = 5000
+api.defaults.timeout = 5000
+
+var lastOmniboxInputEvent = null
 
 chrome.storage.sync.get({ yaleApi: "", yaleToken: "" }, (item) => {
     if (item.yaleApi && item.yaleToken) {
-        axios.defaults.baseURL = item.yaleApi;
-        axios.defaults.headers.common["authorization"] = "Bearer " + item.yaleToken;
+        api.defaults.baseURL = item.yaleApi;
+        api.defaults.headers.common["authorization"] = "Bearer " + item.yaleToken;
     }
 });
 
 chrome.runtime.onMessage.addListener(msg => {
     if (msg.recipient == "background.js" && msg.type == "apiInfo") {
-        axios.defaults.baseURL = msg.content.apiUrl
-        axios.defaults.headers.common["authorization"] = "Bearer " + msg.content.apiToken;
+        api.defaults.baseURL = msg.content.apiUrl
+        api.defaults.headers.common["authorization"] = "Bearer " + msg.content.apiToken;
     }
     else if (msg.recipient == "background.js" && msg.type == "checkTab") {
         check_current_tab()
@@ -43,8 +56,6 @@ chrome.omnibox.onInputEntered.addListener(text => {
 })
 
 function check_tab(tabId) {
-
-    console.log("checkTab")
     chrome.browserAction.setBadgeText({ tabId: tabId, text: 'o' })
     chrome.browserAction.setBadgeBackgroundColor({ tabId: tabId, color: "#f2ce2b" }) // yello => loading
 
@@ -53,7 +64,7 @@ function check_tab(tabId) {
         if (currentUrl[currentUrl.length - 1] == "/") {
             currentUrl = currentUrl.substring(0, currentUrl.length - 1)
         }
-        axios.get("/api/v1/search/links", {
+        api.get("/api/v1/search/links", {
             params: { query: currentUrl },
         }).then(res => {
             let link = res.data.data[0]
@@ -174,8 +185,6 @@ function deal_omnibox_input(text, suggest) {
             suggests.push({ content: link.url, description: `${title} - <url>${url}</url>` })
         }
         suggest(suggests)
-    })
-});
 
     }).catch(err => {
         console.log(err)
